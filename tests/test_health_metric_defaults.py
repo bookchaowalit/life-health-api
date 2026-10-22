@@ -62,11 +62,6 @@ def test_a_reading_keeps_the_old_id_when_it_is_imported(client, owner):
     assert create(client, owner, legacy_id=3141).status_code == 409
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="cellkit accepts NaN and Infinity for a real field: the row is stored but read back "
-    "with value null, so a required value comes back empty (201 instead of 422)",
-)
 @pytest.mark.parametrize("not_a_number", ["NaN", "Infinity", "-Infinity"])
 def test_a_value_that_is_not_a_finite_number_is_refused(client, owner, not_a_number):
     raw = (
