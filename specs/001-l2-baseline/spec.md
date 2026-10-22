@@ -89,6 +89,13 @@ Big Loop Plan Wave 2 (solo-empire `repository-catalog/roadmaps/BIG-LOOP-PLAN-202
 - **Then** the API answers 422 instead of storing a reading that reads back as null
 - **Test:** `tests/test_health_metric_defaults.py::test_a_value_that_is_not_a_finite_number_is_refused` · level: integration (API + throwaway PostgreSQL)
 
+### AC-09 — Numbers fit their columns
+
+- **Given** an int field (PostgreSQL integer) or a real field
+- **When** a client sends 2**31, or NaN / Infinity / 1e400 as raw JSON
+- **Then** the API answers 422 naming the field (before: a 500 from PostgreSQL, or the value silently stored as null)
+- **Test:** `tests/test_contract.py::test_numbers_fit_their_columns` · level: integration (API + throwaway PostgreSQL)
+
 ## 4. Interfaces and data
 
 | Interface | Change | Contract |
@@ -131,6 +138,7 @@ Big Loop Plan Wave 2 (solo-empire `repository-catalog/roadmaps/BIG-LOOP-PLAN-202
 | AC-06 | `tests/test_health_metric_queries.py::test_another_workspace_cannot_see_a_reading` | characterization (behaviour already present; passed on first run) | CI run of the pushed tip | none |
 | AC-07 | `tests/test_health_metric_queries.py::test_a_patch_that_changes_nothing_keeps_the_version` | characterization (behaviour already present; passed on first run) | CI run of the pushed tip | none |
 | AC-08 | `tests/test_health_metric_defaults.py::test_a_value_that_is_not_a_finite_number_is_refused` | 4010049 · kept as `xfail(strict=True)`: known cellkit bug (non-finite real accepted), fixed in the follow-up cellkit commit | CI run of the pushed tip | none |
+| AC-09 | `tests/test_contract.py::test_numbers_fit_their_columns` | 6cdea29 · `.venv/bin/pytest -q -k numbers_fit` · `AssertionError: ('value', 'NaN', '{"id":1000000,"legacy_id":null,"source":"source-edfd0066","metric_type":"metric_type-8b9c3e18","value":null,"unit":null,"recor` | CI run of the pushed tip | none |
 
 ## 7. Risks and open questions
 
